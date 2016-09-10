@@ -1,0 +1,312 @@
+<!doctype html>
+<!--[if IE 8]><html class="ie8 lt-ie10"><![endif]-->
+<!--[if IE 9]><html class="ie9 lt-ie10"><![endif]-->
+<!--[if gt IE 9]><!--><html lang="en"><!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="cleartype" content="on">
+    <meta name="MobileOptimized" content="320">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/0.1.11/slideout.min.js"></script>
+<link rel="stylesheet" href="Control.Geocoder.css" />
+<script src="Control.Geocoder.js"></script>
+
+
+
+<!-- Draw dependancies -->
+<link rel="stylesheet" href="dist/leaflet.draw.css" />
+    <script src="dist/leaflet.draw.js"></script>
+
+    <script src="src/edit/handler/Edit.Poly.js"></script>
+    <script src="src/edit/handler/Edit.SimpleShape.js"></script>
+    <script src="src/edit/handler/Edit.Circle.js"></script>
+    <script src="src/edit/handler/Edit.Rectangle.js"></script>
+
+    <script src="src/draw/handler/Draw.Feature.js"></script>
+    <script src="src/draw/handler/Draw.Polyline.js"></script>
+    <script src="src/draw/handler/Draw.Polygon.js"></script>
+    <script src="src/draw/handler/Draw.SimpleShape.js"></script>
+    <script src="src/draw/handler/Draw.Rectangle.js"></script>
+    <script src="src/draw/handler/Draw.Circle.js"></script>
+    <script src="src/draw/handler/Draw.Marker.js"></script>
+
+    <script src="src/ext/TouchEvents.js"></script>
+    <script src="src/ext/LatLngUtil.js"></script>
+    <script src="src/ext/GeometryUtil.js"></script>
+    <script src="src/ext/LineUtil.Intersect.js"></script>
+    <script src="src/ext/Polyline.Intersect.js"></script>
+    <script src="src/ext/Polygon.Intersect.js"></script>
+
+    <script src="src/Control.Draw.js"></script>
+    <script src="src/Tooltip.js"></script>
+    <script src="src/Toolbar.js"></script>
+
+    <script src="src/draw/DrawToolbar.js"></script>
+    <script src="src/edit/EditToolbar.js"></script>
+    <script src="src/edit/handler/EditToolbar.Edit.js"></script>
+    <script src="src/edit/handler/EditToolbar.Delete.js"></script>
+
+    <title>After Earth</title>
+
+    <style type="text/css">
+
+        #map {
+    height: 600px;
+    width: 100%;
+    position: relative;
+}
+.menu-ui {
+    background: #fff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    border-radius: 3px;
+    width: 120px;
+    border: 1px solid rgba(0,0,0,0.4);
+}
+
+.menu-ui a {
+    font-size: 13px;
+    color: #404040;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    text-align: center;
+}
+
+.menu-ui a:first-child {
+    border-radius: 3px 3px 0 0;
+}
+
+.menu-ui a:last-child {
+    border:none;
+    border-radius: 0 0 3px 3px;
+}
+
+.menu-ui a:hover {
+    background: #f8f8f8;
+    color: #404040;
+}
+
+.menu-ui a.active {
+    background: #3887BE;
+    color: #FFF;
+}
+
+.menu-ui a.active:hover {
+    background: #3074a4;
+}
+
+  #container {
+    position:relative;
+    height:500px;
+}
+#map {
+    height: 500px;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+#overlay {
+    width: 100%;
+    height: 40%;
+    position:relative
+    outline:1px solid green;
+    pointer-events:none;
+    z-index:99;
+}
+</style>
+  </head>
+  <body>
+
+    <nav id="menu" class="menu">
+      <a href="#">
+        <header class="menu-header">
+          <span class="menu-header-title">Menu</span>
+        </header>
+      </a>
+
+      <section class="menu-section">
+        <h3 class="menu-section-title">Functions</h3>
+        <ul class="menu-section-list">
+          <li><a href="layers.html">Explore Layers</a></li>
+          <li><a href="index.html"><strong>Harvey, WA</strong> Change Over Time</a></li>
+          <li><a href="lorrine.html"><strong>Lorinne, TAS</strong> Change Over Time</a></li>
+          <li><a href="layers1.html"><strong>Killalea State Park</strong> Extended Change Over Time</a></li>
+          <li><a href="norcia.html"><strong>Norcia, Italy <i>Earthquake</i></strong> Change Over Time</a></li>
+        </ul>
+      </section>
+
+
+    </nav>
+
+    <main id="panel" class="panel">
+      <header class="panel-header">
+        <button id="toggle-button"class="btn-hamburger js-slideout-toggle"></button>
+        <h1 class="title">AfterEarth</h1>
+      </header>
+
+      <section class="box">
+        <h2 class="box-title">Extended Layers - Killalea, New South Wales | <strong>1/08/2015 - 21/08/2016</strong></h2>
+        <div id="mocha" class="box-content">
+              <div id="container">
+                                
+    <div id="map"> <nav id="menu-ui" class="menu-ui"></nav>
+</div>
+    
+</div>
+
+ 
+        </div>
+      </section>
+
+      <footer class="panel-footer">
+        <p>with <span class="heart">❤</span> by <a href="#" target="_blank">Brenna</a></p>
+      </footer>
+    </main>
+        <script>
+      var slideout = new Slideout({
+        'panel': document.getElementById('panel'),
+        'menu': document.getElementById('menu'),
+        'padding': 256,
+        'tolerance': 70
+      });
+
+      // Toggle button
+      document.getElementById('toggle-button').addEventListener('click', function() {
+        slideout.toggle();
+      });
+    </script>
+   <script>
+// Get the user's API key via prompt
+
+
+// Confirm we've got 'em by displaying them to the screen
+var apiKey = 'BB70FD54EBB7483882BC',
+    apiSecret = 'A69E7AE6C49C455C856386A130DF299D';
+
+// Create a Leaflet map
+var map = L.mapbox.map('map').setView([
+    -34.598611, 150.867778
+], 12);
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var drawControl = new L.Control.Draw({
+    edit: {
+        featureGroup: drawnItems
+    }
+});
+map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('A popup!');
+            }
+
+            drawnItems.addLayer(layer);
+        });
+
+        map.on('draw:edited', function (e) {
+            var layers = e.layers;
+            var countOfEditedLayers = 0;
+            layers.eachLayer(function(layer) {
+                countOfEditedLayers++;
+            });
+            console.log("Edited " + countOfEditedLayers + " layers");
+        });
+
+L.control.fullscreen().addTo(map);
+
+var geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+        var bbox = e.geocode.bbox;
+        var poly = L.polygon([
+             bbox.getSouthEast(),
+             bbox.getNorthEast(),
+             bbox.getNorthWest(),
+             bbox.getSouthWest()
+        ]).addTo(map);
+        map.fitBounds(poly.getBounds());
+    })
+    .addTo(map);
+var rgbLayerBefore = `https://tile-{s}.urthecast.com/v1/rgb/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2015-07-31T14:00:00.000Z&acquired_lte=2015-08-21T13:59:59.999Z`,
+    ndviLayerBefore = `https://tile-{s}.urthecast.com/v1/ndvi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2015-07-31T14:00:00.000Z&acquired_lte=2015-08-21T13:59:59.999Z`,
+    ndwiLayerBefore = `https://tile-{s}.urthecast.com/v1/ndwi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2015-07-31T14:00:00.000Z&acquired_lte=2015-08-21T13:59:59.999Z`,
+    fcnirLayerBefore= `https://tile-{s}.urthecast.com/v1/false-color-nir/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2015-07-31T14:00:00.000Z&acquired_lte=2015-08-21T13:59:59.999Z`,
+    eviLayerBefore = `https://tile-{s}.urthecast.com/v1/evi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2015-07-31T14:00:00.000Z&acquired_lte=2015-08-21T13:59:59.999Z`;
+
+var rgbLayerAfter = `https://tile-{s}.urthecast.com/v1/rgb/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2016-07-31T14:00:00.000Z&acquired_lte=2016-08-21T13:59:59.999Z`,
+    ndviLayerAfter = `https://tile-{s}.urthecast.com/v1/ndvi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2016-07-31T14:00:00.000Z&acquired_lte=2016-08-21T13:59:59.999Z`,
+    ndwiLayerAfter = `https://tile-{s}.urthecast.com/v1/ndwi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2016-07-31T14:00:00.000Z&acquired_lte=2016-08-21T13:59:59.999Z`,
+    fcnirLayerAfter = `https://tile-{s}.urthecast.com/v1/false-color-nir/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2016-07-31T14:00:00.000Z&acquired_lte=2016-08-21T13:59:59.999Z`,
+    eviLayerAfter = `https://tile-{s}.urthecast.com/v1/evi/{z}/{x}/{y}?api_key=${apiKey}&api_secret=${apiSecret}&cloud_coverage_lte=30&acquired_gte=2016-07-31T14:00:00.000Z&acquired_lte=2016-08-21T13:59:59.999Z`;
+    
+// Append them to the map
+addLayer(L.tileLayer(rgbLayerBefore).addTo(map), 'RGB- Before', 1);
+addLayer(L.tileLayer(ndviLayerBefore).addTo(map), 'NDVI- Before', 2);
+addLayer(L.tileLayer(ndwiLayerBefore).addTo(map), 'NDWI- Before', 3);
+addLayer(L.tileLayer(fcnirLayerBefore).addTo(map), 'False Color NIR- Before', 4);
+addLayer(L.tileLayer(eviLayerBefore).addTo(map), 'EVI- Before', 5);
+addLayer(L.tileLayer(rgbLayerAfter).addTo(map), 'RGB- After', 1);
+addLayer(L.tileLayer(ndviLayerAfter).addTo(map), 'NDVI- After', 2);
+addLayer(L.tileLayer(ndwiLayerAfter).addTo(map), 'NDWI- After', 3);
+addLayer(L.tileLayer(fcnirLayerAfter).addTo(map), 'False Color NIR- After', 4);
+addLayer(L.tileLayer(eviLayerAfter).addTo(map), 'EVI- After', 5);
+// From https://www.mapbox.com/mapbox.js/example/v1.0.0/layers/
+function addLayer(layer, name, zIndex) {
+    layer
+        .setZIndex(zIndex)
+        .addTo(map);
+
+    // Create a simple layer switcher that
+    // toggles layers on and off.
+    var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.innerHTML = name;
+
+    link.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (map.hasLayer(layer)) {
+            map.removeLayer(layer);
+            this.className = '';
+        } else {
+            map.addLayer(layer);
+            this.className = 'active';
+        }
+    };
+    
+    var layers = document.getElementById('menu-ui');
+
+    layers.appendChild(link);
+}
+
+
+</script>
+  </body>
+</html>
